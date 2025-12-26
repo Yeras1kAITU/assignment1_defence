@@ -112,7 +112,7 @@ func formatCourses(courses []string) string {
 		return "[]"
 	}
 
-	return "[" + strings.Join(courses, ", ") + "]"
+	return "'" + strings.Join(courses, ", ") + "'"
 }
 
 func (r *Registry) PrintStudents() {
@@ -123,7 +123,7 @@ func (r *Registry) PrintStudents() {
 		return
 	}
 
-	fmt.Println("\n=== Students in Registry ===")
+	fmt.Println("\n__ Students in Registry __")
 	for _, student := range students {
 		coursesStr := formatCourses(student.Courses)
 		fmt.Printf("ID: %d | Name: %s | Courses: %s\n",
@@ -139,7 +139,7 @@ func (r *Registry) PrintCourseStatistics() {
 		return
 	}
 
-	fmt.Println("\n=== Course Enrollment Statistics ===")
+	fmt.Println("\n__ Course Enrollment Statistics __")
 	for course, count := range courseStats {
 		fmt.Printf("%s → %d\n", course, count)
 	}
@@ -148,9 +148,9 @@ func (r *Registry) PrintCourseStatistics() {
 func RunCourseRegistry() {
 	registry := NewRegistry()
 
-	registry.AddStudent(Student{ID: 1, Name: "Alice", Courses: []string{"Go", "Databases"}})
-	registry.AddStudent(Student{ID: 2, Name: "Bob", Courses: []string{"Go"}})
-	registry.AddStudent(Student{ID: 3, Name: "Charlie", Courses: []string{}})
+	registry.AddStudent(Student{ID: 1, Name: "Жалгас", Courses: []string{"Go", "Native"}})
+	registry.AddStudent(Student{ID: 2, Name: "Алишер", Courses: []string{"SQL"}})
+	registry.AddStudent(Student{ID: 3, Name: "Акбота", Courses: []string{"Go", "Web"}})
 
 	fmt.Println("Initial test data loaded:")
 	registry.PrintStudents()
