@@ -1,7 +1,7 @@
 package main
 
 import (
-	"CourseRegistry"
+	"github.com/Yeras1kAITU/assignment1_defence/CourseRegistry"
 )
 
 func main() {

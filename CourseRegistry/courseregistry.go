@@ -3,84 +3,69 @@ package CourseRegistry
 import (
 	"errors"
 	"fmt"
+	"strings"
 )
 
-// Student struct
 type Student struct {
 	ID      uint64
 	Name    string
 	Courses []string
 }
 
-// Registry struct
 type Registry struct {
 	Students map[uint64]Student
 }
 
-// NewRegistry creates a new Registry
 func NewRegistry() *Registry {
 	return &Registry{
 		Students: make(map[uint64]Student),
 	}
 }
 
-// AddStudent adds a new student to the registry
 func (r *Registry) AddStudent(student Student) error {
-	// Check if student ID already exists
 	if _, exists := r.Students[student.ID]; exists {
 		return errors.New("student ID already exists")
 	}
 
-	// Check if name is empty
 	if student.Name == "" {
 		return errors.New("student name cannot be empty")
 	}
 
-	// Initialize empty courses slice if nil
 	if student.Courses == nil {
 		student.Courses = []string{}
 	}
 
-	// Add student to registry
 	r.Students[student.ID] = student
 	return nil
 }
 
-// EnrollCourse enrolls a student in a course
 func (r *Registry) EnrollCourse(studentID uint64, course string) error {
-	// Check if student exists
 	student, exists := r.Students[studentID]
 	if !exists {
 		return errors.New("student does not exist")
 	}
 
-	// Check if course name is empty
 	if course == "" {
 		return errors.New("course name cannot be empty")
 	}
 
-	// Check if student is already enrolled in the course
 	for _, c := range student.Courses {
 		if c == course {
 			return errors.New("student is already enrolled in this course")
 		}
 	}
 
-	// Add course to student's course list
 	student.Courses = append(student.Courses, course)
 	r.Students[studentID] = student
 	return nil
 }
 
-// RemoveCourse removes a course from a student's enrollment
 func (r *Registry) RemoveCourse(studentID uint64, course string) error {
-	// Check if student exists
 	student, exists := r.Students[studentID]
 	if !exists {
 		return errors.New("student does not exist")
 	}
 
-	// Find and remove the course
 	found := false
 	newCourses := []string{}
 	for _, c := range student.Courses {
@@ -95,13 +80,11 @@ func (r *Registry) RemoveCourse(studentID uint64, course string) error {
 		return errors.New("course not found for this student")
 	}
 
-	// Update student's courses
 	student.Courses = newCourses
 	r.Students[studentID] = student
 	return nil
 }
 
-// ListStudents returns all students as a slice
 func (r *Registry) ListStudents() []Student {
 	students := make([]Student, 0, len(r.Students))
 
@@ -112,11 +95,9 @@ func (r *Registry) ListStudents() []Student {
 	return students
 }
 
-// CoursesCount returns a map with course enrollment statistics
 func (r *Registry) CoursesCount() map[string]int {
 	courseCount := make(map[string]int)
 
-	// Count enrollments for each course
 	for _, student := range r.Students {
 		for _, course := range student.Courses {
 			courseCount[course]++
@@ -126,7 +107,14 @@ func (r *Registry) CoursesCount() map[string]int {
 	return courseCount
 }
 
-// PrintStudents prints all students in the required format
+func formatCourses(courses []string) string {
+	if len(courses) == 0 {
+		return "[]"
+	}
+
+	return "[" + strings.Join(courses, ", ") + "]"
+}
+
 func (r *Registry) PrintStudents() {
 	students := r.ListStudents()
 
@@ -137,12 +125,12 @@ func (r *Registry) PrintStudents() {
 
 	fmt.Println("\n=== Students in Registry ===")
 	for _, student := range students {
-		fmt.Printf("ID: %d | Name: %s | Courses: %v\n",
-			student.ID, student.Name, student.Courses)
+		coursesStr := formatCourses(student.Courses)
+		fmt.Printf("ID: %d | Name: %s | Courses: %s\n",
+			student.ID, student.Name, coursesStr)
 	}
 }
 
-// PrintCourseStatistics prints course enrollment statistics
 func (r *Registry) PrintCourseStatistics() {
 	courseStats := r.CoursesCount()
 
@@ -157,11 +145,9 @@ func (r *Registry) PrintCourseStatistics() {
 	}
 }
 
-// RunCourseRegistry provides console interface
 func RunCourseRegistry() {
 	registry := NewRegistry()
 
-	// Add initial test data
 	registry.AddStudent(Student{ID: 1, Name: "Alice", Courses: []string{"Go", "Databases"}})
 	registry.AddStudent(Student{ID: 2, Name: "Bob", Courses: []string{"Go"}})
 	registry.AddStudent(Student{ID: 3, Name: "Charlie", Courses: []string{}})
